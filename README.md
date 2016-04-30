@@ -1,6 +1,10 @@
 # Zoom
 Zoo Markup: Fast &amp; modern C++ header-only HTML/XML document generator. Work in progress.
 
+## Todo
+* Helper methods for commonly needed tags (div, span, p, link, title)
+* Binding external data, variables
+
 Example usage:
 ```c++
 #include <iostream>
