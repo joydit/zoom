@@ -14,8 +14,7 @@ using namespace zoo;
 int main() {
 	HTMLDocument doc;
 	doc.head(
-		Tag( "title",
-			Text("Hello World" )));
+		Title(Text("Hello World" )));
 	doc.body(
 		Div(
 			H1(Text("Heading")),
