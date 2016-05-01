@@ -2,7 +2,7 @@
 Zoo Markup: Fast &amp; modern C++ header-only HTML/XML document generator. Work in progress.
 
 ## Todo
-* Helper methods for commonly needed tags (div, span, p, link, title) and constructors for those tags that accept text as an argument.
+* Helper methods for commonly needed tags (div, span, p, link, title) and constructors for those tags that accept a ```std::string``` as an argument.
 * Binding external data, variables
 
 Example usage:
