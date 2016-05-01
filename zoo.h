@@ -28,11 +28,16 @@ namespace zoo {
 	public:
 		Tag(const std::string& tag) : tag{ tag }, contents{}, attributes{} {}
 
-		template <typename... Ts>
-		Tag(const std::string& tag, const Ts&&... tail) : tag{ tag }, attributes{} {
-			for (auto e : { tail... }) {
-				add(std::move(e));
-			}
+		template <typename T>
+		Tag(const std::string& tag, const T& element) :
+			tag{ tag }, attributes{} {
+			add_front(std::move(element));
+		}
+
+		template <typename T, typename... Ts>
+		Tag(const std::string& tag, const T& element, const Ts&... elements) :
+			Tag(tag, elements...) {
+			add_front(std::move(element));
 		}
 
 		virtual std::string toString() const override {
@@ -59,11 +64,15 @@ namespace zoo {
 			return static_cast<T*>(contents.back().get());
 		}
 
+		template<typename T>
+		T* add_front(const T&& element) {
+			contents.emplace_front(std::make_shared<T>(element));
+			return static_cast<T*>(contents.back().get());
+		}
 
 	};
 
 	class HTMLDocument : public Tag {
-
 		class DocType : public Element {
 			std::string doctype;
 		public:
@@ -74,25 +83,80 @@ namespace zoo {
 		};
 
 		DocType doctype;
-		Tag* head;
-		Tag* body;
+		Tag* head_tag, body_tag;
 
 	public:
 		HTMLDocument() : Tag{ "html" },
 			doctype{ "html" },
-			head{ Tag::add(Tag{ "head" }) },
-			body{ Tag::add(Tag{ "body" }) } {}
+			head_tag{ add(Tag{ "head" }) },
+			body_tag{ add(Tag{ "body" }) } {}
 
 		std::string toString() const override {
 			return doctype.toString() + Tag::toString();
 		}
 
-		template<typename T>
-		T* add(const T&& element) {
-			return body->add(std::move(element));
+
+		template <typename T>
+		void body(const T&& element) {
+			body_tag->add(std::move(element));
 		}
 
+		template <typename T, typename... Ts>
+		void body(const T&& element, const Ts&&... elements) {
+			body(std::move(elements...));
+			body_tag->add_front(std::move(element));
+		}
+
+		template <typename T>
+		void head(const T&& element) {
+			head_tag->add(std::move(element));
+		}
+
+		template <typename T, typename... Ts>
+		void head(const T&& element, const Ts&&... elements) {
+			head(std::move(elements...));
+			head_tag->add_front(std::move(element));
+		}
 
 	};
 
+	class Title : public Tag {
+	public:
+		template <typename... Ts>
+		Title(const Ts&&... elements) : Tag("title", elements...){}
+	};
+
+	class Div : public Tag {
+	public:
+		template <typename... Ts>
+		Div(const Ts&&... elements) : Tag("div", elements...) {}
+	};
+
+	class H1 : public Tag {
+	public:
+		template <typename... Ts>
+		H1(const Ts&&... elements) : Tag("h1", elements...) {}
+	};
+
+	class H2 : public Tag {
+	public:
+		template <typename... Ts>
+		H2(const Ts&&... elements) : Tag("h2", elements...) {}
+	};
+
+	class Strong : public Tag {
+	public:
+		template <typename... Ts>
+		Strong(const Ts&&... elements) : Tag("strong", elements...) {}
+	};
+	class Ul : public Tag {
+	public:
+		template <typename... Ts>
+		Ul(const Ts&&... elements) : Tag("ul", elements...) {}
+	};
+	class Li : public Tag {
+	public:
+		template <typename... Ts>
+		Li(const Ts&&... elements) : Tag("li", elements...) {}
+	};
 }
