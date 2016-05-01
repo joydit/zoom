@@ -83,7 +83,8 @@ namespace zoo {
 		};
 
 		DocType doctype;
-		Tag* head_tag, body_tag;
+		Tag* head_tag;
+		Tag* body_tag;
 
 	public:
 		HTMLDocument() : Tag{ "html" },
